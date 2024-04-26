@@ -1,0 +1,1 @@
+# maniakhq-consul
