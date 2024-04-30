@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: argocd-ingress
+  namespace: argocd  # Adjust if your Argo CD is in a different namespace
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"  # Use HTTPS if Argo CD is served over HTTPS
+    nginx.ingress.kubernetes.io/ssl-passthrough: "true"  # Enable SSL passthrough to let Argo CD handle TLS termination
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - argocd.maniak.lab
+    secretName: argocd-tls  # The TLS secret for your domain, must be pre-created or managed via cert-manager
+  rules:
+  - host: argocd.maniak.lab
+    http:
+      paths:
+      - pathType: ImplementationSpecific
+        backend:
+          service:
+            name: argocd-server
+            port:
+              number: 443
+        path: /
