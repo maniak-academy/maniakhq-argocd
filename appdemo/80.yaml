@@ -47,7 +47,7 @@ metadata:
   name: exampleservice-deployment
   namespace: foo
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: exampleservice
