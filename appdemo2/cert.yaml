@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: appdemo2-cert
+  namespace: appdemo2
+spec:
+  secretName: appdemo2-tls
+  issuerRef:
+    name: selfsigned-issuer
+    kind: ClusterIssuer
+  dnsNames:
+  - appdemo2.maniak.lab

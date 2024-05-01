@@ -96,6 +96,10 @@ metadata:
   #   nginx.ingress.kubernetes.io/ssl-redirect: "false"
 spec:
   ingressClassName: nginx
+  tls: # <-- This section adds TLS configuration
+  - hosts:
+    - appdemo2.maniak.lab
+    secretName: appdemo2-tls
   rules:
   - host: appdemo2.maniak.lab
     http:

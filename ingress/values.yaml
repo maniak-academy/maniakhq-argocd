@@ -1,11 +1,12 @@
 controller:
   service:
+    enabled: true
     type: NodePort
     nodePorts:
       http: 30080
-      https: 30443
+      https: 33443
   extraArgs:
-    enable-ssl-passthrough: ""
+    enable-ssl-passthrough: "true"
   watchIngressWithoutClass: true
   admissionWebhooks: 
    patch:

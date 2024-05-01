@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: consul-ui-ingress
+  namespace: consul
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+    cert-manager.io/issuer: test-ca-issuer
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - consul.maniak.lab
+      secretName: test-ca-secret
+
+  rules:
+  - host: consul.maniak.lab
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: consul-ui
+            port:
+              number: 443

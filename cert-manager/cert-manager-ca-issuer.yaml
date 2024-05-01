@@ -1,0 +1,8 @@
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: test-ca-issuer
+  namespace: consul
+spec:
+  ca:
+    secretName: test-ca-secret

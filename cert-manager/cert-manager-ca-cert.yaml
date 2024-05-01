@@ -1,0 +1,23 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: test-ca
+  namespace: consul
+spec:
+  isCA: true
+  commonName: consul.maniak.lab  # It's okay to still include the CN for compatibility
+  dnsNames:
+    - consul.maniak.lab  # Add this line to specify the DNS SAN
+  subject:
+    organizations:
+      - ACME Inc.
+    organizationalUnits:
+      - Widgets
+  secretName: test-ca-secret
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+  issuerRef:
+    name: selfsigned-issuer
+    kind: Issuer
+    group: cert-manager.io
