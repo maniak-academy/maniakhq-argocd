@@ -1,0 +1,109 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+  namespace: appdemo2
+data:
+  nginx.conf: |
+    user nginx;
+    worker_processes auto;
+    error_log /var/log/nginx/error.log;
+    pid /var/run/nginx.pid;
+
+    events {
+        worker_connections 1024;
+    }
+
+    http {
+        include /etc/nginx/mime.types;
+        default_type application/octet-stream;
+        log_format main '$remote_addr - $remote_user [$time_local] "$request" '
+                        '$status $body_bytes_sent "$http_referer" '
+                        '"$http_user_agent" "$http_x_forwarded_for"';
+        access_log /var/log/nginx/access.log main;
+        sendfile on;
+        keepalive_timeout 65;
+
+        server {
+            listen 80;
+            server_name appdemo2.maniak.lab;
+
+            location / {
+                root /usr/share/nginx/html;
+                index index.html index.htm;
+            }
+
+            error_page 500 502 503 504 /50x.html;
+            location = /50x.html {
+                root /usr/share/nginx/html;
+            }
+        }
+    }
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: appdemo2-deployment
+  namespace: appdemo2
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: appdemo2
+  template:
+    metadata:
+      labels:
+        app: appdemo2
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+      volumes:
+      - name: config-volume
+        configMap:
+          name: nginx-config
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: appdemo2
+  namespace: appdemo2
+spec:
+  type: ClusterIP
+  selector:
+    app: appdemo2
+  ports:
+  - port: 80
+    targetPort: 80
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: appdemo2-ingress
+  namespace: appdemo2
+  # annotations:
+  #   nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
+  #   nginx.ingress.kubernetes.io/grpc-backend: "true"
+  #   nginx.ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: appdemo2.maniak.lab
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: appdemo2
+            port:
+              number: 80
