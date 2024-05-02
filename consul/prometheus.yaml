@@ -3,6 +3,7 @@ global:
   scrape_interval: 5s
   scrape_timeout: 3s
 server:
+  enabled: true
   podAnnotations:
     "consul.hashicorp.com/connect-inject": "false"
   readinessProbeInitialDelay: 0
@@ -14,18 +15,23 @@ server:
     enabled: false
 alertmanager:
   enabled: false
+  podAnnotations:
+    "consul.hashicorp.com/connect-inject": "false"
 nodeExporter:
+  enabled: true
   podAnnotations:
     "consul.hashicorp.com/connect-inject": "false"
 pushgateway:
+  enabled: false
   podAnnotations:
     "consul.hashicorp.com/connect-inject": "false"
 kube-state-metrics:
+  enabled: true
   podAnnotations:
     "consul.hashicorp.com/connect-inject": "false"
 serviceAccounts:
   alertmanager:
-    create: true
+    create: false
     name:
     annotations: {}
   nodeExporter:
@@ -33,7 +39,7 @@ serviceAccounts:
     name:
     annotations: {}
   pushgateway:
-    create: true
+    create: false
     name:
     annotations: {}
   server:
