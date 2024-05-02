@@ -104,7 +104,7 @@ spec:
         app: nginx
       annotations:
         consul.hashicorp.com/connect-inject: "true"
-        consul.hashicorp.com/connect-service-upstreams: "frontend:3000, public-api:8080"
+        consul.hashicorp.com/connect-service-upstreams: "frontend.svc.hashicups.ns:3000, public-api.svc.hashicups.ns:8080"
     spec:
       serviceAccountName: nginx
       containers:

@@ -59,7 +59,7 @@ spec:
         app: product-api
       annotations:
         consul.hashicorp.com/connect-inject: "true"
-        consul.hashicorp.com/connect-service-upstreams: "product-api-db:5432"
+        consul.hashicorp.com/connect-service-upstreams: "product-api-db.svc.hashicups.ns:5432"
     spec:
       serviceAccountName: product-api
       volumes:
