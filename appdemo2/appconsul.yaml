@@ -91,15 +91,15 @@ metadata:
   name: appdemo2-ingress
   namespace: appdemo2
   # annotations:
-  #   nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
-  #   nginx.ingress.kubernetes.io/grpc-backend: "true"
-  #   nginx.ingress.kubernetes.io/ssl-redirect: "false"
+  #   nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+    # nginx.ingress.kubernetes.io/ssl-backend: "true"
+    # nginx.ingress.kubernetes.io/ssl-redirect: "false"
 spec:
   ingressClassName: nginx
-  tls: # <-- This section adds TLS configuration
-  - hosts:
-    - appdemo2.maniak.lab
-    secretName: appdemo2-tls
+  # tls: # <-- This section adds TLS configuration
+  # - hosts:
+  #   - appdemo2.maniak.lab
+  #   secretName: appdemo2-tls
   rules:
   - host: appdemo2.maniak.lab
     http:
