@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: nginx-config
-  namespace: appdemo2
+  namespace: foo
 data:
   nginx.conf: |
     user nginx;
@@ -26,7 +26,7 @@ data:
 
         server {
             listen 80;
-            server_name appdemo2.maniak.lab;
+            server_name www.maniak.lab;
 
             location / {
                 root /usr/share/nginx/html;
@@ -44,17 +44,17 @@ data:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: appdemo2-deployment
-  namespace: appdemo2
+  name: fooservice-deployment
+  namespace: foo
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: appdemo2
+      app: fooservice
   template:
     metadata:
       labels:
-        app: appdemo2
+        app: fooservice
     spec:
       containers:
       - name: nginx
@@ -74,12 +74,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: appdemo2
-  namespace: appdemo2
+  name: fooservice
+  namespace: foo
 spec:
   type: ClusterIP
   selector:
-    app: appdemo2
+    app: fooservice
   ports:
   - port: 80
     targetPort: 80
@@ -88,26 +88,22 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: appdemo2-ingress
-  namespace: appdemo2
+  name: foo-ingress
+  namespace: foo
   # annotations:
-  #   nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
-    # nginx.ingress.kubernetes.io/ssl-backend: "true"
-    # nginx.ingress.kubernetes.io/ssl-redirect: "false"
+  #   nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
+  #   nginx.ingress.kubernetes.io/grpc-backend: "true"
+  #   nginx.ingress.kubernetes.io/ssl-redirect: "false"
 spec:
   ingressClassName: nginx
-  # tls: # <-- This section adds TLS configuration
-  # - hosts:
-  #   - appdemo2.maniak.lab
-  #   secretName: appdemo2-tls
   rules:
-  - host: appdemo2.maniak.lab
+  - host: foo.maniak.lab
     http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service:
-            name: appdemo2
+            name: fooservice
             port:
               number: 80

@@ -16,22 +16,30 @@ global:
   # TLS configures whether Consul components use TLS.
   tls:
     enabled: true
+    enableAutoEncypt: true
     httpsOnly: false  # Metrics are exposed on 8500 only (http).  Anonymous policy requires Agent "read" if ACL enabled.
+    # verify: false
+    # caCert:
+    #   secretName: consul-ca-cert
+    #   secretKey: tls.crt
   acls:
     manageSystemACLs: true
-  metrics:
-    enabled: true
-    enableGatewayMetrics: true
-    enableAgentMetrics: true
-    agentMetricsRetentionTime: "59m"
+  gossipEncryption:
+    secretName: consul-gossip-encryption-key
+    secretKey: key
+  # metrics:
+  #   enabled: true
+  #   enableGatewayMetrics: true
+  #   enableAgentMetrics: true
+  #   agentMetricsRetentionTime: "59m"
 server:
-  replicas: 2
-  bootstrapExpect: 2
+  replicas: 1
+  bootstrapExpect: 1
   exposeService:
     # When enabled, deploys a Kubernetes Service to reach the Consul servers.
     # @type: boolean
     enabled: true
-    type: ClusterIP
+    type: LoadBalancer
     # annotations: |
     #   service.beta.kubernetes.io/aws-load-balancer-type: "nlb-ip"
  
@@ -50,31 +58,42 @@ dns:
   enabled: true
   enableRedirection: true
 
+# syncCatalog:
+#   enabled: true 
+#   toConsul: true
+#   toK8S: false
+#   k8sAllowNamespaces: ["foo","appdemo","appdemo2","echo"]
+#   k8sDenyNamespaces: ["consul", "kube-system","longhorn-system", "argocd"]
+#   addK8SNamespaceSuffix: false
+#   consulNamespaces:
+#     mirroringK8S: true
+
 syncCatalog:
   enabled: true
   toConsul: true
-  toK8S: false
-  k8sAllowNamespaces: ["foo","appdemo","appdemo2"]
-  k8sDenyNamespaces: ["consul", "kube-system","longhorn-system", "argocd"]
+  toK8S: true
+  k8sAllowNamespaces: ["*"]
+  k8sDenyNamespaces: ["consul", "kube-system"]
   addK8SNamespaceSuffix: false
   consulNamespaces:
     mirroringK8S: true
 
 connectInject:
   enabled: true
-  default: false
+  k8sAllowNamespaces: ['hashicups','echo','default']
+  k8sDenyNamespaces: []
   apiGateway:
     manageExternalCRDs: true
     managedGatewayClass:
-      serviceType: NodePort
-      useHostPorts: true
+      serviceType: LoadBalancer
+     # useHostPorts: true
       # copyAnnotations:
       #   service:
       #     annotations: |
       #       - service.beta.kubernetes.io/aws-load-balancer-scheme
       #       - service.beta.kubernetes.io/aws-load-balancer-type
   transparentProxy:
-    defaultEnabled: false
+    defaultEnabled: true
   consulNamespaces:
     mirroringK8S: true
     consulDestinationNamespace: "default"
@@ -111,19 +130,24 @@ connectInject:
         # Recommended production default: 500m
         cpu: "250m"
 meshGateway:
-  enabled: true
+  enabled: enabled
   replicas: 1
+  log_level: "debug"
   service:
     enabled: true
-    type: ClusterIP
+    type: LoadBalancer
+    #nodePort: 31915
     # annotations: |
     #   service.beta.kubernetes.io/aws-load-balancer-type: "nlb-ip"
 
 ui:
   enabled: true
   service:
-    type: ClusterIP
+    type: LoadBalancer
   metrics:
     enabled: true # by default, this inherits from the value global.metrics.enabled
     provider: "prometheus"
-    baseURL: http://prometheus-server.default.svc.cluster.local
+    baseURL: http://prometheus-server
+    
+prometheus:
+  enabled: true

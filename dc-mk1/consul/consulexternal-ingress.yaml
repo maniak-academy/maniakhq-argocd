@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tcp-services
+  namespace: ingress-nginx
+data:
+  "8502": "consul/mconsul-expose-servers:8502"
+  "8501": "consul/mconsul-expose-servers:8501"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ingress-nginx
+  namespace: ingress-nginx
+  labels:
+    app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/part-of: ingress-nginx
+spec:
+  type: LoadBalancer
+  ports:
+    - name: consul-expose-servers8502
+      port: 8502
+      targetPort: 8502
+      protocol: TCP
+    - name: consul-expose-servers8501
+      port: 8501
+      targetPort: 8501
+      protocol: TCP
+  selector:
+    app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/part-of: ingress-nginx
