@@ -85,7 +85,7 @@ connectInject:
   apiGateway:
     manageExternalCRDs: true
     managedGatewayClass:
-      serviceType: LoadBalancer
+      serviceType: ClusterIP
      # useHostPorts: true
       # copyAnnotations:
       #   service:
@@ -135,7 +135,7 @@ meshGateway:
   log_level: "debug"
   service:
     enabled: true
-    type: LoadBalancer
+    type: ClusterIP
     #nodePort: 31915
     # annotations: |
     #   service.beta.kubernetes.io/aws-load-balancer-type: "nlb-ip"
@@ -143,7 +143,7 @@ meshGateway:
 ui:
   enabled: true
   service:
-    type: LoadBalancer
+    type: ClusterIP
   metrics:
     enabled: true # by default, this inherits from the value global.metrics.enabled
     provider: "prometheus"

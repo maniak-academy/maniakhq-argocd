@@ -1,0 +1,26 @@
+
+# Certificate resource
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: falco-tls
+  namespace: falco
+spec:
+  isCA: true
+  commonName: falco.maniak.lab
+  dnsNames:
+    - falco.maniak.lab
+  subject:
+    organizations:
+      - ACME Inc.
+    organizationalUnits:
+      - Widgets
+  secretName: falco-tls
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+  issuerRef:
+    name: selfsigned-issuer
+    kind: Issuer
+    group: cert-manager.io

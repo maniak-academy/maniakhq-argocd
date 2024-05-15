@@ -1,0 +1,6 @@
+# Namespace definition
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: falco
