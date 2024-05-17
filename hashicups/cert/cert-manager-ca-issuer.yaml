@@ -1,0 +1,8 @@
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: hashicups-ca-issuer
+  namespace: hashicups
+spec:
+  ca:
+    secretName: hashicups-ca-secret

@@ -1,0 +1,13 @@
+apiVersion: v1
+data:
+  token: NWU4ODQzNjktZjFlMy1kOWRhLTU0ZmMtMDM2MjI2ZTdmNzZk
+kind: Secret
+metadata:
+  creationTimestamp: "2024-05-17T16:00:57Z"
+  labels:
+    managed-by: consul-k8s
+  name: consul-partitions-acl-token
+  namespace: consul
+  resourceVersion: "4701255"
+  uid: c4f09b6a-9b6f-4bc4-9a81-7d70fcdf5170
+type: Opaque

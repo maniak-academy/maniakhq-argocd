@@ -1,7 +1,14 @@
-helm install ingress-nginx ingress-nginx/ingress-nginx -f values.yaml -n ingress-nginx
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+helm repo update
 
-kubectl create secret tls foo-tls --key example/tls.key --cert example/tls.crt -n foo
-helm install ingress-nginx ingress-nginx/ingress-nginx -f values.yaml -n ingress-nginx
+ kubectl create ns ingress-nginx
+ helm install ingress-nginx ingress-nginx/ingress-nginx \
+    --namespace ingress-nginx --create-namespace \
+    --set controller.service.type=NodePort \
+    --set controller.service.nodePorts.http=31280 \
+    --set controller.service.nodePorts.https=31243 \
+    --set controller.hostNetwork=true \
+    --set controller.extraArgs.enable-ssl-passthrough=true
 
-kubectl delete secret tls foo-tls  -n foo
-cd ,,
+ helm uninstall ingress-nginx \
+    --namespace ingress-nginx 

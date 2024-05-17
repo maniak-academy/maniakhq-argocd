@@ -1,0 +1,66 @@
+global:
+  enabled: false
+  name: consul
+  datacenter: maniak
+  image: hashicorp/consul-enterprise:1.18.1-ent
+  enableConsulNamespaces: true
+  adminPartitions:
+    enabled: true
+    name: sk1
+  enterpriseLicense:
+    secretName: consul-ent-license
+    secretKey: key
+  tls:
+    enabled: true
+    caCert:
+      secretName: consul-ca-cert
+      secretKey: tls.crt
+    caKey:
+      secretName: consul-ca-key
+      secretKey: tls.key
+  acls:
+    manageSystemACLs: true
+    bootstrapToken:
+      secretName: consul-partitions-acl-token # See step 8 from `Install Consul server cluster`
+      secretKey: token
+dns:
+  enabled: true
+  enableRedirection: true
+externalServers:
+  enabled: true
+  hosts: ["172.16.10.20","172.16.10.21","172.16.10.22"]
+  httpsPort: 32694
+  grpcPort: 31014
+  tlsServerName: server.maniak.consul
+  # useSystemRoots: true
+  k8sAuthMethodHost: https://172.16.10.23:6443 # See step 5 from `Install Consul server cluster`
+syncCatalog:
+  enabled: true
+  toConsul: true
+  toK8S: true
+  k8sAllowNamespaces: ["syncfakeservice"]
+  k8sDenyNamespaces: []
+  addK8SNamespaceSuffix: false
+  consulNamespaces:
+    mirroringK8S: true
+
+connectInject:
+  enabled: true
+  default: false
+  name: consul-connect-injector
+  k8sAllowNamespaces: ["hashicups","fakeservice","consul","ping"]
+  k8sDenyNamespaces: []
+  apiGateway:
+    manageExternalCRDs: true
+    managedGatewayClass:
+      serviceType: NodePort
+  transparentProxy:
+    defaultEnabled: true
+  consulNamespaces:
+    mirroringK8S: true
+    consulDestinationNamespace: "default"
+  cni:
+    enabled: true
+
+terminatingGateways:
+  enabled: true

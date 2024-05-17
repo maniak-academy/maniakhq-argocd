@@ -20,7 +20,3 @@ helmCharts:
 
 patchesStrategicMerge:
   - ingress.yaml
-
-
-
-

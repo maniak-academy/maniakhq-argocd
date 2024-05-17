@@ -4,14 +4,14 @@ apiVersion: gateway.networking.k8s.io/v1beta1
 kind: Gateway
 metadata:
   name: api-gateway
-  namespace: consul
+  namespace: hashicups
 spec:
   gatewayClassName: consul
   # Configures the listener that is bound to the gateway's address.
   listeners:
     # Defines the listener protocol (HTTP, HTTPS, or TCP)
   - protocol: HTTP
-    port: 8080
+    port: 80
     name: http
     allowedRoutes:
       namespaces:
