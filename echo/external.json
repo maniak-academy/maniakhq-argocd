@@ -1,0 +1,19 @@
+{
+  "Node": "example_com",
+  "Address": "example.com",
+  "NodeMeta": {
+    "external-node": "true",
+    "external-probe": "true"
+  },
+  "Service": {
+    "Address": "example.com",
+    "ID": "example-https",
+    "Service": "example-https",
+    "Port": 443,
+    "check": {
+      "http": "http://example.com",
+      "interval": "10s",
+      "timeout": "5s"
+    }
+  }
+}

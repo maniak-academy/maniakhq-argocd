@@ -1,0 +1,28 @@
+---
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceIntentions
+metadata:
+  name: api-gateway-echo-1
+  namespace: api-gateway
+spec:
+  destination:
+    name: echo-1
+    namespace: echo-lb
+  sources:
+    - name: api-gateway
+      namespace: api-gateway
+      action: allow
+---
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceIntentions
+metadata:
+  name: api-gateway-echo-2
+  namespace: api-gateway
+spec:
+  destination:
+    name: echo-2
+    namespace: echo-lb
+  sources:
+    - name: api-gateway
+      namespace: api-gateway
+      action: allow

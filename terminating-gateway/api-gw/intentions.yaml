@@ -1,0 +1,15 @@
+---
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceIntentions
+metadata:
+  name: coffee-api-gateway
+  namespace: api-gateway
+# Allow traffic from api-gateway to nginx
+spec:
+  destination:
+    name: nginx
+    namespace: tgw
+  sources:
+    - name: api-gateway
+      namespace: api-gateway
+      action: allow

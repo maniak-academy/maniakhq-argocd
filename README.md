@@ -9,7 +9,7 @@ helm repo add hashicorp https://helm.releases.hashicorp.com
 
 ```bash
 kubectl create namespace consul
-secret=$(cat /Users/sebbycorp/Documents/Projects/maniakhq-argocd/consul-infra/consul.hclic)
+secret=$(cat consul.hclic)
 kubectl create secret generic consul-ent-license --from-literal="key=${secret}" -n consul
 ```
 
@@ -18,12 +18,12 @@ kubectl create secret generic consul-ent-license --from-literal="key=${secret}" 
 * cd consul-infra/consulcontrolplane 
 
 ```bash
-helm install consul --values values.yaml  hashicorp/consul --namespace consul --version "1.4.1"
+helm install consul --values values.yaml  hashicorp/consul --namespace consul --version "1.4.2"
 ```
 
 * Udpate helm
 ```bash
-helm upgrade consul --values values.yaml  hashicorp/consul --namespace consul --version "1.4.1"
+helm upgrade consul --values values.yaml  hashicorp/consul --namespace consul --version "1.4.2"
 ```
 
 ## Idenfify the SVC and Node Ports
@@ -47,8 +47,10 @@ kubectl get secret consul-partitions-acl-token -n consul -o yaml > consul-partit
 ## Install dataplane
 
 ```bash
-helm install --values dataplane.yaml consul hashicorp/consul --namespace consul --version "1.4.1"
+helm install --values dataplane.yaml consul hashicorp/consul --namespace consul --version "1.4.2"
 ```
+
+## Create a namespace of api-gateway kub    
 
 ## Get took token
 export CONSUL_GOSSIP=$(kubectl get --namespace consul secrets/consul-bootstrap-acl-token --template={{.data.token}} | base64 -d)
@@ -94,3 +96,13 @@ kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.pas
 
 kubectl get secret consul-ca-cert consul-bootstrap-acl-token  -n consul --output yaml > cluster1-credentials.yaml
 
+flowchart TD
+  subgraph k8sCluster["Kubernetes Cluster"]
+    serviceA[Service A]
+    subgraph consulMesh["Consul Service Mesh"]
+      terminatingGateway[Consul Terminating Gateway]
+    end
+  end
+
+  serviceA -->|Internal traffic| consulMesh
+  consulMesh -->|External traffic| externalResource[External Resource]

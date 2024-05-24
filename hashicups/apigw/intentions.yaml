@@ -1,0 +1,15 @@
+---
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceIntentions
+metadata:
+  name: api-gateway
+  namespace: api-gateway
+# Allow traffic from api-gateway to nginx
+spec:
+  destination:
+    name: nginx
+    namespace: hashicups
+  sources:
+    - name: api-gateway
+      namespace: api-gateway
+      action: allow

@@ -1,24 +1,24 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: consul-ui-ingress
+  name: prom-ui-ingress
   namespace: consul
-  annotations:
-    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
-    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+  # annotations:
+  #   nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+  #   nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
 spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - consul.maniak.lab
+        - monitor.maniak.lab
   rules:
-    - host: consul.maniak.lab
+    - host: monitor.maniak.lab
       http:
         paths:
           - pathType: Prefix
             path: /
             backend:
               service:
-                name: consul-ui
+                name: prometheus-server
                 port:
-                  number: 443
+                  number: 80

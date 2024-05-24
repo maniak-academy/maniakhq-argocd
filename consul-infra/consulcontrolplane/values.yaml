@@ -2,7 +2,7 @@ global:
   enabled: true
   name: consul
   datacenter: maniak
-  image: hashicorp/consul-enterprise:1.18.1-ent
+  image: hashicorp/consul-enterprise:1.18.2-ent
   enableConsulNamespaces: true
   adminPartitions:
     enabled: true
@@ -17,15 +17,19 @@ global:
       - "*.maniak.lab"
   acls:
     manageSystemACLs: true
+  metrics:
+    enabled: true
+    enableGatewayMetrics: true
 dns:
   enabled: true
   enableRedirection: true
 syncCatalog:
   enabled: true
-  toConsul: true
-  toK8S: true
-  k8sAllowNamespaces: ["syncfakeservice"]
-  k8sDenyNamespaces: []
+  default: false
+  toConsul: false
+  toK8S: false
+  # k8sAllowNamespaces: ["syncfakeservice","ping","echo"]
+  # k8sDenyNamespaces: []
   addK8SNamespaceSuffix: false
   consulNamespaces:
     mirroringK8S: true
@@ -42,15 +46,19 @@ server:
       grpc: 31014
 ui:
   enabled: true
+  metrics:
+    enabled: true # by default, this inherits from the value global.metrics.enabled
+    provider: "prometheus"
+    baseURL: http://prometheus-server
   service:
     type: NodePort
-
+    nodePort:
+      https: 31443
 connectInject:
   enabled: true
   default: false
-  name: consul-connect-injector
-  k8sAllowNamespaces: ["hashicups","fakeservice","consul","ping"]
-  k8sDenyNamespaces: []
+  # k8sAllowNamespaces: ["hashicups","fakeservice","consul","ping","echo"]
+  # k8sDenyNamespaces: []
   apiGateway:
     manageExternalCRDs: true
     managedGatewayClass:
@@ -59,9 +67,11 @@ connectInject:
     defaultEnabled: true
   consulNamespaces:
     mirroringK8S: true
-    consulDestinationNamespace: "default"
   cni:
     enabled: true
-
 terminatingGateways:
+  enabled: true
+  defaults:
+    consulNamespaces: "consul"
+prometheus:
   enabled: true

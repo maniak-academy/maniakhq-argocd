@@ -1,7 +1,7 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: test-ca
+  name: consul-tls
   namespace: consul
 spec:
   isCA: true
@@ -13,7 +13,7 @@ spec:
       - ACME Inc.
     organizationalUnits:
       - Widgets
-  secretName: test-ca-secret
+  secretName: consul-tls
   privateKey:
     algorithm: ECDSA
     size: 256
